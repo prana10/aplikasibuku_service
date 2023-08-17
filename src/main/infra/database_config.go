@@ -31,7 +31,7 @@ func InitDB() *gorm.DB {
 	return dsn
 }
 
-func migrateDB(db *gorm.DB) error {
+func AutoMigrateDB(db *gorm.DB) error {
 	return db.AutoMigrate(
 		&domainBook.Book{},
 		&domainGenre.Genre{},

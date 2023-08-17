@@ -9,7 +9,7 @@ import (
 
 type Book struct {
 	gorm.Model
-	Name        string                    `gorm:"column:name;not null" json:"name"`
+	Title       string                    `gorm:"column:title;not null" json:"title"`
 	Author      string                    `gorm:"column:author;not null" json:"author"`
 	Price       float64                   `gorm:"column:price;not null" json:"price"`
 	Isbn        int                       `gorm:"column:isbn;not null" json:"isbn"`

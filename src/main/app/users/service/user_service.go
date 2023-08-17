@@ -10,5 +10,4 @@ type UserService interface {
 	LoginUser(user inputUser.LoginUserInput) (domainUser.User, error)
 	RegisterUser(user inputUser.RegisterUserInput) (domainUser.User, error)
 	GetUserByID(id uint) (domainUser.User, error)
-	CheckEmailAvailibility(email string) (domainUser.User, error)
 }

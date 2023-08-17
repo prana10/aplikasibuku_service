@@ -15,7 +15,7 @@ type User struct {
 	Password    string                          `gorm:"column:password;not null;type:varchar(255)"`
 	Email       string                          `gorm:"column:name;not null;type:varchar(255)" json:"email"`
 	PhoneNumber string                          `gorm:"column:phone_number;not null;type:varchar(255)" json:"phone_number"`
-	Address     string                          `gorm:"column:address;not null;type:TEXT" json:"address"`
+	Address     string                          `gorm:"column:address;null;type:TEXT" json:"address"`
 	Otp         []domainOTP.Otp                 `gorm:"foreignKey:UserID" json:"otp"`
 	Wishlist    []domainWishlist.Wishlist       `gorm:"foreignKey:UserID" json:"-"`
 	Transaction []domainTransaction.Transaction `gorm:"foreignKey:TransactionID" json:"transaction"`

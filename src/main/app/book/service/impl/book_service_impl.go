@@ -16,8 +16,16 @@ func NewBookService(bookRepository repositoryBook.BookRepositoy) *bookService {
 }
 
 // insert book
-func (service *bookService) InsertBook(book domainBook.Book) (domainBook.Book, error) {
-	book, err := service.bookRepository.CreateBook(book)
+func (service *bookService) InsertBook(bookInput bookInput.BookInput) (domainBook.Book, error) {
+	newBook := domainBook.Book{}
+	newBook.Title = bookInput.Title
+	newBook.Author = bookInput.Author
+	newBook.Price = bookInput.Price
+	newBook.Isbn = bookInput.Isbn
+	newBook.Genre = bookInput.Genre
+	newBook.Description = bookInput.Description
+
+	book, err := service.bookRepository.CreateBook(newBook)
 
 	if err != nil {
 		return book, err

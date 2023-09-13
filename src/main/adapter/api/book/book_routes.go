@@ -3,14 +3,15 @@ package book
 import (
 	jwt "service-api/src/main/adapter/auth"
 	serviceBook "service-api/src/main/app/book/service"
+	serviceGenre "service-api/src/main/app/genre/service"
 	serviceUser "service-api/src/main/app/users/service"
 	infra "service-api/src/main/infra"
 
 	"github.com/gin-gonic/gin"
 )
 
-func BookRoutes(routes *gin.RouterGroup, userService serviceUser.UserService, service serviceBook.BookService, jwtService jwt.Service) {
-	var controller = NewBookController(service)
+func BookRoutes(routes *gin.RouterGroup, userService serviceUser.UserService, service serviceBook.BookService, serviceGenre serviceGenre.GenreService, jwtService jwt.Service) {
+	var controller = NewBookController(service, serviceGenre)
 
 	bookRoute := routes.Group("/books")
 	{

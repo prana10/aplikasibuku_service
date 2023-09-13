@@ -4,26 +4,51 @@ import (
 	"errors"
 	domainBook "service-api/src/main/app/book/domain"
 	repositoryBook "service-api/src/main/app/book/repository"
-	bookInput "service-api/src/main/util/input/book"
+	domainGenre "service-api/src/main/app/genre/domain"
+	repositoryGenre "service-api/src/main/app/genre/repository"
+	inputBook "service-api/src/main/util/input/book"
+
+	"gorm.io/gorm"
 )
 
 type bookService struct {
-	bookRepository repositoryBook.BookRepositoy
+	bookRepository  repositoryBook.BookRepositoy
+	genreRepository repositoryGenre.GenreRepository
 }
 
-func NewBookService(bookRepository repositoryBook.BookRepositoy) *bookService {
-	return &bookService{bookRepository}
+func NewBookService(bookRepository repositoryBook.BookRepositoy, genreRepository repositoryGenre.GenreRepository) *bookService {
+	return &bookService{bookRepository, genreRepository}
 }
 
 // insert book
-func (service *bookService) InsertBook(bookInput bookInput.BookInput) (domainBook.Book, error) {
+func (service *bookService) InsertBook(bookInput inputBook.BookInput) (domainBook.Book, error) {
+	var genreID []uint
+	for _, genre := range bookInput.Genre {
+		idGenre, err := service.genreRepository.GetGenreByID(uint(genre))
+		if err != nil {
+			return domainBook.Book{}, err
+		}
+
+		if idGenre.ID == 0 {
+			return domainBook.Book{}, errors.New("genre not found")
+		}
+
+		genreID = append(genreID, uint(genre))
+	}
+
 	newBook := domainBook.Book{}
 	newBook.Title = bookInput.Title
 	newBook.Author = bookInput.Author
 	newBook.Price = bookInput.Price
 	newBook.Isbn = bookInput.Isbn
-	newBook.Genre = bookInput.Genre
 	newBook.Description = bookInput.Description
+
+	// append genre by id to newBook
+	for _, genre := range genreID {
+		newBook.Genre = append(newBook.Genre, domainGenre.Genre{Model: gorm.Model{
+			ID: genre,
+		}})
+	}
 
 	book, err := service.bookRepository.CreateBook(newBook)
 
@@ -65,15 +90,35 @@ func (service *bookService) GetBookByID(bookID uint) (domainBook.Book, error) {
 }
 
 // update book by id
-func (service *bookService) UpdateBookByID(bookID uint, book bookInput.BookInput) (domainBook.Book, error) {
+func (service *bookService) UpdateBookByID(bookID uint, book inputBook.BookInput) (domainBook.Book, error) {
+	var genreID []uint
+	for _, genre := range book.Genre {
+		idGenre, err := service.genreRepository.GetGenreByID(uint(genre))
+		if err != nil {
+			return domainBook.Book{}, err
+		}
+
+		if idGenre.ID == 0 {
+			return domainBook.Book{}, errors.New("genre not found")
+		}
+
+		genreID = append(genreID, uint(genre))
+	}
+
 	var bookUpdate domainBook.Book
 	bookUpdate.ID = bookID
 	bookUpdate.Title = book.Title
 	bookUpdate.Author = book.Author
 	bookUpdate.Price = book.Price
 	bookUpdate.Isbn = book.Isbn
-	bookUpdate.Genre = book.Genre
 	bookUpdate.Description = book.Description
+
+	// append genre by id to newBook
+	for _, genre := range genreID {
+		bookUpdate.Genre = append(bookUpdate.Genre, domainGenre.Genre{Model: gorm.Model{
+			ID: genre,
+		}})
+	}
 
 	newBook, err := service.bookRepository.UpdateBookByID(bookID, bookUpdate)
 

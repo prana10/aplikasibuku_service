@@ -18,7 +18,7 @@ type User struct {
 	Address     string                          `gorm:"column:address;null;type:TEXT" json:"address"`
 	Otp         []domainOTP.Otp                 `gorm:"foreignKey:UserID" json:"otp"`
 	Wishlist    []domainWishlist.Wishlist       `gorm:"foreignKey:UserID" json:"-"`
-	Transaction []domainTransaction.Transaction `gorm:"foreignKey:TransactionID" json:"transaction"`
+	Transaction []domainTransaction.Transaction `gorm:"foreignKey:UserID" json:"transaction"`
 }
 
 func (User) TableName() string {

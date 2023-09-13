@@ -36,7 +36,7 @@ func AutoMigrateDB(db *gorm.DB) error {
 		&domainBook.Book{},
 		&domainGenre.Genre{},
 		&domainUser.User{},
-		&domainTransaction.Transaction{},
 		&domainPaymentMethod.PaymentMethod{},
+		&domainTransaction.Transaction{},
 	)
 }

@@ -3,8 +3,9 @@ version: '3.9'
 services:
   db:
     image: postgres:14-alpine
+    restart: always
     ports:
-      - "5432:${DB_PORT}"
+      - ${DB_PORT}:5432
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
@@ -21,6 +22,8 @@ services:
       - db
     ports:
       - 8080:8080
+    networks:
+      - aplikasibuku
 networks:
   aplikasibuku:
     driver: bridge
